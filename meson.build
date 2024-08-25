@@ -74,11 +74,13 @@ exprecision = get_option('exprecision')
 is_linux = host_machine.system() == 'linux'
 is_darwin = host_machine.system() == 'darwin'
 
-if is_linux or is_darwin
-    no_affinity = true
-else
-    no_affinity = false
-endif
+no_affinity = true
+
+# if is_linux or is_darwin
+#     no_affinity = true
+# else
+#     no_affinity = false
+# endif
 
 if cc_id == 'clang'
     asm_name_prefix = '_'
@@ -92,6 +94,12 @@ is_win = host_machine.system() == 'windows' or host_machine.system() == 'cygwin'
 conf_data.set('OS_WINDOWS', is_win)
 hostcpu = host_machine.cpu_family()
 conf_data.set('ARCH', hostcpu.to_upper())
+
+if is_win
+    blas_server_src = 'blas_server_win32.c'
+else
+    blas_server_src = 'blas_server.c'
+endif
 
 defarch_array = [
  # {'system': ['windows', 'cygwin'], 'def': ['OS_WINDOWS']},

@@ -64,7 +64,13 @@ foreach lvl : lvls
             c_args: ['-DADD_', '-DCBLAS'],
         )
 
-        _args = [f'./@op_name@']
+        if is_win
+            obj_name = op_name
+        else
+            obj_name = f'./@op_name@'
+        endif
+
+        _args = [obj_name]
         if details.has_key('input_file')
             _args += [meson.current_source_dir() / details['input_file'].replace('?', type)]
         endif
