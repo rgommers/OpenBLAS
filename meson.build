@@ -474,6 +474,16 @@ symb_defs = {
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
 
+# 3m_ rules
+m3_startswith = {
+    '3m_i': ['-UUSE_ALPHA'],
+    '3m_o': ['-DUSE_ALPHA'],
+}
+m3_endswith = {
+    'copyr': ['-DREAL_ONLY'],
+    'copyi': ['-DIMAGE_ONLY'],
+}
+
 # config.h file generation
 
 _config_h = meson.current_build_dir() / 'config.h'
