@@ -74,13 +74,11 @@ exprecision = get_option('exprecision')
 is_linux = host_machine.system() == 'linux'
 is_darwin = host_machine.system() == 'darwin'
 
-no_affinity = true
-
-# if is_linux or is_darwin
-#     no_affinity = true
-# else
-#     no_affinity = false
-# endif
+if is_linux or is_darwin
+    no_affinity = true
+else
+    no_affinity = false
+endif
 
 if cc_id == 'clang'
     asm_name_prefix = '_'

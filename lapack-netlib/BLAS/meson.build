@@ -7,8 +7,6 @@ _netlib_lapacke_name = get_option('netlib_lapacke_name')
 subdir('SRC')
 
 build_testing = get_option('build_testing')
-if build_testing
-  if not is_win
-    subdir('TESTING')
-  endif
+if build_testing and not is_win
+  subdir('TESTING')
 endif

@@ -1,4 +1,5 @@
-_blas_roots += [{ 'base': '?getf2', '_types': ['s', 'd'],
+_lapack_interface_roots = [
+  { 'base': '?getf2', '_types': ['s', 'd'],
     'fname': 'lapack/getf2.c',
   },
   # TODO: Makefile: 2074:2076 but doesn't exist

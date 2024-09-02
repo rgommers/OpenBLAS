@@ -405,7 +405,8 @@ _blas_roots = [
 ]
 
 if not is_win
-subdir('lapack')
+  subdir('lapack')
+  _blas_roots += _lapack_interface_roots
 endif
 
 _interface_libs = []

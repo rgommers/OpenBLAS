@@ -449,7 +449,7 @@ foreach _kop : driver_kops
     foreach mode : modes
     if is_win # extensions are not present on Windows
       if mode in ['x', 'q']
-      continue
+        continue
       endif
     endif
       # Generate the mapping for the type
