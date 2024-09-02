@@ -836,7 +836,10 @@ base_kops = [
             '_outcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-DLOWER']},
         }},
-        # TODO(rg): These can be cleaned up, c -> -UDOUBLE -DCOMPLEX anyway
+        # NOTE(rg): for c,z; there are a bunch of 3m_i?copy* symbols where there
+        # may be a compulsion to reduce this into a series of loops; resist
+        # this, since there's no good way to extend the exts keys alone without
+        # replacing the whole dictionary.
         'c': {'exts': {
             '_iutcopy': {'addl': ['-UOUTER', '-ULOWER']},
             '_iltcopy': {'addl': ['-UOUTER', '-DLOWER']},
