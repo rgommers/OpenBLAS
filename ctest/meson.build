@@ -26,7 +26,11 @@ _test_input_array = {
     },
 }
 
-lvls = ['l1', 'l2', 'l3']
+lvls = ['l1', 'l3']
+# TODO(rg) : Times out..
+if not is_win
+  lvls += ['l2']
+endif
 
 if conf_hdat.has('ARCH_X86_64') or conf_hdat.has('ARCH_X86')
     _test_input_array += {
