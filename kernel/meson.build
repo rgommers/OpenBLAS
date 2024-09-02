@@ -672,6 +672,7 @@ base_kops = [
             '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
             '_outcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '3m_iucopyb':
         }},
         'z': {'exts': {
             '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
@@ -795,7 +796,7 @@ base_kops = [
             '_outcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-DLOWER']},
         }},
-        # TODO(rg): These can be cleaned up, c -> -DCOMPLEX anyway
+        # TODO(rg): These can be cleaned up, c -> -UDOUBLE -DCOMPLEX anyway
         'c': {'exts': {
             '_iutcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
             '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
@@ -803,14 +804,34 @@ base_kops = [
             '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
             '3m_iucopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
             '3m_oucopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA']},
-            '3m_iucopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
+            '3m_iucopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_oucopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_iucopyi': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_oucopyi': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_ilcopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
+            '3m_olcopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA']},
+            '3m_ilcopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_olcopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_ilcopyi': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_olcopyi': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DIMAGE_ONLY']},
         }},
+        # TODO(rg): These can be cleaned up, z -> -DDOUBLE -DCOMPLEX anyway
         'z': {'exts': {
             '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
             '_iltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
             '_outcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
             '3m_iucopyb': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
+            '3m_oucopyb': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA']},
+            '3m_iucopyr': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_oucopyr': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_iucopyi': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_oucopyi': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_olcopyb': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA']},
+            '3m_ilcopyr': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_olcopyr': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DREAL_ONLY']},
+            '3m_ilcopyi': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA', '-DIMAGE_ONLY']},
+            '3m_olcopyi': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA', '-DIMAGE_ONLY']},
         }},
     },
   },
