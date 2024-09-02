@@ -360,35 +360,7 @@ x86_64_base_dict = {
 
     },
     '?symm': {
-        # TODO(rg): Get these from the make prefixes
-        'c': {
-            '3m_iucopyb': 'generic/zsymm3m_ucopy_8.c',
-            '3m_oucopyb': 'generic/zsymm3m_ucopy_4.c',
-            '3m_iucopyr': 'generic/zsymm3m_ucopy_8.c',
-            '3m_oucopyr': 'generic/zsymm3m_ucopy_4.c',
-            '3m_iucopyi': 'generic/zsymm3m_ucopy_8.c',
-            '3m_oucopyi': 'generic/zsymm3m_ucopy_4.c',
-            '3m_ilcopyb': 'generic/zsymm3m_lcopy_8.c',
-            '3m_olcopyb': 'generic/zsymm3m_lcopy_4.c',
-            '3m_ilcopyr': 'generic/zsymm3m_lcopy_8.c',
-            '3m_olcopyr': 'generic/zsymm3m_lcopy_4.c',
-            '3m_ilcopyi': 'generic/zsymm3m_lcopy_8.c',
-            '3m_olcopyi': 'generic/zsymm3m_lcopy_4.c',
-        },
-        'z': {
-            '3m_iucopyb': 'generic/zsymm3m_ucopy_4.c',
-            '3m_oucopyb': 'generic/zsymm3m_ucopy_4.c',
-            '3m_iucopyr': 'generic/zsymm3m_ucopy_4.c',
-            '3m_oucopyr': 'generic/zsymm3m_ucopy_4.c',
-            '3m_iucopyi': 'generic/zsymm3m_ucopy_4.c',
-            '3m_oucopyi': 'generic/zsymm3m_ucopy_4.c',
-            '3m_ilcopyb': 'generic/zsymm3m_lcopy_4.c',
-            '3m_olcopyb': 'generic/zsymm3m_lcopy_4.c',
-            '3m_ilcopyr': 'generic/zsymm3m_lcopy_4.c',
-            '3m_olcopyr': 'generic/zsymm3m_lcopy_4.c',
-            '3m_ilcopyi': 'generic/zsymm3m_lcopy_4.c',
-            '3m_olcopyi': 'generic/zsymm3m_lcopy_4.c',
-        },
+
     },
     '?omatcopy_k': {
 

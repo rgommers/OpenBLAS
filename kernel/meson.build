@@ -672,7 +672,6 @@ base_kops = [
             '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
             '_outcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
-            '3m_iucopyb':
         }},
         'z': {'exts': {
             '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
