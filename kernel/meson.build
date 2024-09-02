@@ -19,6 +19,23 @@ CGEMM3M_UNROLL_M = makefile_conf_dat.get('CGEMM3M_UNROLL_M')
 ZGEMM3M_UNROLL_N = makefile_conf_dat.get('ZGEMM3M_UNROLL_N')
 ZGEMM3M_UNROLL_M = makefile_conf_dat.get('ZGEMM3M_UNROLL_M')
 
+# TODO(rg): Poor detection?!? -_-
+# Sanity check, we don't have anything greater than 16 for some of the UNROLL_N
+# options; e.g generic/zhemm3m_ucopy_16.c doesn't exist (attempted on macos); so
+# we opt for the conservative option..
+if ZGEMM3M_UNROLL_N.to_int() > 8
+  ZGEMM3M_UNROLL_N = 8
+endif
+if ZGEMM3M_UNROLL_M.to_int() > 8
+  ZGEMM3M_UNROLL_M = 8
+endif
+if CGEMM3M_UNROLL_N.to_int() > 8
+  CGEMM3M_UNROLL_N = 8
+endif
+if CGEMM3M_UNROLL_M.to_int() > 8
+  CGEMM3M_UNROLL_M = 8
+endif
+
 subdir('meson_base')
 subdir('x86_64')
 subdir('arm64')
