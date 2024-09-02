@@ -795,17 +795,22 @@ base_kops = [
             '_outcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-DLOWER']},
         }},
+        # TODO(rg): These can be cleaned up, c -> -DCOMPLEX anyway
         'c': {'exts': {
             '_iutcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
             '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
             '_outcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
+            '3m_oucopyb': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DUSE_ALPHA']},
+            '3m_iucopyr': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
         }},
         'z': {'exts': {
             '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
             '_iltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
             '_outcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UUSE_ALPHA']},
         }},
     },
   },
