@@ -8,5 +8,7 @@ subdir('SRC')
 
 build_testing = get_option('build_testing')
 if build_testing
-  subdir('TESTING')
+  if not is_win
+    subdir('TESTING')
+  endif
 endif
