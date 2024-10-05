@@ -640,3 +640,10 @@ if build_testing
   subdir('ctest')
   subdir('utest')
 endif
+
+# Dependency setup
+openblas_dep = declare_dependency(
+    link_whole : openblas_static,
+    include_directories : _inc,
+    version: meson.project_version(),
+)
