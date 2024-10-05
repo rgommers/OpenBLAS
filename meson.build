@@ -74,11 +74,13 @@ exprecision = get_option('exprecision')
 is_linux = host_machine.system() == 'linux'
 is_darwin = host_machine.system() == 'darwin'
 
-if is_linux or is_darwin
-    no_affinity = true
-else
-    no_affinity = false
-endif
+no_affinity = true
+# TODO(mtsokol): Find out in which cases affinity should be on
+# if is_linux or is_darwin
+#     no_affinity = true
+# else
+#     no_affinity = false
+# endif
 
 if cc_id == 'clang'
     asm_name_prefix = '_'
