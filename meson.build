@@ -12,6 +12,7 @@
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
         default_options: ['c_std=c99', 'pkgconfig.relocatable=true'],
+        license: 'BSD-3-Clause',
         version: '0.3.27.dev')
 
 openblas_major_version = 0 # soversion
