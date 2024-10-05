@@ -1,3 +1,4 @@
+# TODO(rg): Add handling of utest_main2 as per CMakeLists
 sources_utest = [
     'utest_main.c',
     'test_min.c',
@@ -84,13 +85,19 @@ sources_utest_ext = [
 
 utest_inc = _inc + [include_directories('.')]
 
+# TODO(rg): Can this be fixed?
+# ‘strsignal’ in utest, seems like a false positive
+_utest_nowarn = cc.get_supported_arguments(
+  '-Wno-implicit-function-declaration',
+)
+
 openblas_utest_exec = executable(
     'openblas_utest',
     sources: sources_utest,
     link_with: openblas_static,
     dependencies: [dependency('threads')],
     include_directories: utest_inc,
-    c_args: _cargs,
+    c_args: _cargs + _utest_nowarn,
 )
 
 openblas_utest_ext_exec = executable(
@@ -102,7 +109,7 @@ openblas_utest_ext_exec = executable(
     # `common.h` from the source root, not `utest/test_extensions` directory
     # one. Also, `config.h` is needed that lives in the build directory.
     implicit_include_directories: false,
-    c_args: _cargs + [f'-I@prj_src_dir@', f'-I@prj_bld_dir@'],
+    c_args: _cargs + _utest_nowarn + [f'-I@prj_src_dir@', f'-I@prj_bld_dir@'],
 )
 
 test('openblas_utest_tests', openblas_utest_exec)
