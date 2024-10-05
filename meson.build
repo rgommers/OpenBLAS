@@ -24,8 +24,8 @@ cc = meson.get_compiler('c')
 fc = meson.get_compiler('fortran')
 cc_id = cc.get_id()
 fc_id = fc.get_id()
-prj_bld_dir = meson.project_build_root()
-prj_src_dir = meson.project_source_root()
+_mbproot = meson.project_build_root()
+_msproot = meson.project_source_root()
 
 pkg = import('pkgconfig')
 pkg_ver = meson.project_version()
@@ -184,7 +184,6 @@ endforeach
 configure_file(output : 'simd_conf.h',
                configuration : simd_conf_data)
 # Can't be added as a project argument since it won't be generated until later
-bldroot = meson.build_root()
 add_project_arguments(simd_cargs, language: 'c')
 
 # Common symbol related options
@@ -486,21 +485,21 @@ m3_endswith = {
 
 # config.h file generation
 
-_config_h = meson.current_build_dir() / 'config.h'
-_makefile_conf = meson.current_build_dir() / 'Makefile.conf'
-run_command('./c_check', _makefile_conf, _config_h, cc_id, check: true)
-run_command('./f_check', _makefile_conf, _config_h, fc_id, check: true)
+_config_h = f'@_mbproot@/config.h'
+_makefile_conf = f'@_mbproot@/Makefile.conf'
+run_command(f'@_msproot@/c_check', _makefile_conf, _config_h, cc_id, check: true)
+run_command(f'@_msproot@/f_check', _makefile_conf, _config_h, fc_id, check: true)
 
-run_command(cc_id, '-o', 'getarch', 'getarch.c', 'cpuid.S', check: true)
-_getarch_1_result = run_command('./getarch', '1', check: true, capture: true)
+run_command(cc_id, '-o', f'@_mbproot@/getarch', 'getarch.c', 'cpuid.S', check: true)
+_getarch_1_result = run_command(f'@_mbproot@/getarch', '1', check: true, capture: true)
 run_command(py3,
-            './write_to_file.py',
+            f'@_msproot@/write_to_file.py',
             _getarch_1_result.stdout(),
             _config_h,
             check: true)
-_getarch_0_result = run_command('./getarch', '0', check: true, capture: true)
+_getarch_0_result = run_command(f'@_mbproot@/getarch', '0', check: true, capture: true)
 run_command(py3,
-            './write_to_file.py',
+            f'@_msproot@/write_to_file.py',
             _getarch_0_result.stdout(),
             _makefile_conf,
             check: true)
@@ -508,34 +507,34 @@ run_command(py3,
 run_command(cc_id,
             '-DGEMM_MULTITHREAD_THRESHOLD=4',
             '-I.',
-            f'-I@prj_bld_dir@',
+            f'-I@_mbproot@',
             '-o', 'getarch_2nd',
             'getarch_2nd.c',
             capture: true, check: true)
 _getarch_2nd_1_result = run_command('./getarch_2nd', '1', check: true, capture: true)
 run_command(py3,
-            './write_to_file.py',
+            f'@_msproot@/write_to_file.py',
             _getarch_2nd_1_result.stdout(),
             _config_h,
             check: true)
 _getarch_2nd_0_result = run_command('./getarch_2nd', '0', check: true, capture: true)
 run_command(py3,
-            './write_to_file.py',
+            f'@_msproot@/write_to_file.py',
             _getarch_2nd_0_result.stdout(),
             _makefile_conf,
             check: true)
 
 
-_read_config_py = './read_config.py'
+_read_config_py = f'@_msproot@/read_config.py'
 
 run_command(py3,
             _read_config_py,
             '--file1', _config_h,
-            '--build_dir', meson.current_build_dir(),
+            '--build_dir', f'@_mbproot@',
             check: true)
 
 keyval = import('keyval')
-conf_kv = keyval.load(meson.current_build_dir() / 'config.kconf')
+conf_kv = keyval.load(f'@_mbproot@/config.kconf')
 # NOTE(rg): conf_kv doesn't do any parsing, setup manually
 conf_hdat = configuration_data()
 foreach key,val : conf_kv
@@ -546,7 +545,7 @@ foreach key,val : conf_kv
   endif
 endforeach
 
-makefile_conf_kv = keyval.load(meson.current_build_dir() / 'Makefile.conf')
+makefile_conf_kv = keyval.load(f'@_mbproot@/Makefile.conf')
 makefile_conf_dat = configuration_data()
 foreach key,val : makefile_conf_kv
   makefile_conf_dat.set(key, val)
@@ -591,16 +590,16 @@ if not get_option('build_without_lapack')
 endif
 
 # Paths to necessary files for header generation
-fconfig_h = meson.build_root() / 'config.h'
-fconfig_last = meson.build_root() / 'config_last.h'
-template = meson.source_root() / 'openblas_config_template.h'
-common_interface = meson.source_root() / 'common_interface.h'
-cblas = meson.source_root() / 'cblas.h'
+fconfig_h = f'@_mbproot@/config.h'
+fconfig_last = f'@_mbproot@/config_last.h'
+template = f'@_msproot@/openblas_config_template.h'
+common_interface = f'@_msproot@/common_interface.h'
+cblas = f'@_msproot@/cblas.h'
 
 # Prepare config_last.h from config.h
 pcl = custom_target('prepare_config_last',
   output : 'config_last.h',
-  command : [py3, meson.source_root() / 'prepare_config_last.py',
+  command : [py3, f'@_msproot@/prepare_config_last.py',
              '--config', fconfig_h,
              '--output', fconfig_last,
              quad_prec ? '--quad-precision' : [],
@@ -612,8 +611,8 @@ pcl = custom_target('prepare_config_last',
 # Generate the headers
 custom_target('gen_install_headers',
   output : ['openblas_config.h', 'f77blas.h', 'cblas.h'],
-  command : [py3, meson.source_root() / 'gen_install_headers.py',
-             '--dest-dir', meson.build_root(),
+  command : [py3, f'@_msproot@/gen_install_headers.py',
+             '--dest-dir', f'@_mbproot@',
              '--version', meson.project_version(),
              '--config-last', fconfig_last,
              '--template', template,

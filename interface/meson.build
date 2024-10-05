@@ -1,4 +1,4 @@
-interface_args = ['-include', f'@bldroot@/simd_conf.h']
+interface_args = ['-include', f'@_mbproot@/simd_conf.h']
 # if not build_without_cblas
 #   interface_args += '-DCBLAS'
 # endif
