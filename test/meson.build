@@ -30,7 +30,13 @@ foreach _test : _test_input_array
         dependencies: [dependency('threads')],
     )
 
-    _args = [f'./@test_id@']
+    if is_win
+        obj_name = test_id
+    else
+        obj_name = f'./@test_id@'
+    endif
+
+    _args = [obj_name]
     if _test['has_dat']
         _args += [ meson.current_source_dir() / f'@test_id@.dat']
     endif

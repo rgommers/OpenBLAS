@@ -447,6 +447,11 @@ foreach _kop : driver_kops
 
     # Iterate through each mode
     foreach mode : modes
+    if is_win # extensions are not present on Windows
+      if mode in ['x', 'q']
+        continue
+      endif
+    endif
       # Generate the mapping for the type
       __cargs = _cargs + _ckop_args
       prec_mode = precision_mappings[mode]

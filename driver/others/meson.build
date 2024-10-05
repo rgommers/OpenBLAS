@@ -11,7 +11,7 @@ others_ops = [
   { 'base': 'openblas_get_parallel', 'source': 'openblas_get_parallel.c' },
   { 'base': 'openblas_error_handle', 'source': 'openblas_error_handle.c' },
   { 'base': 'openblas_env', 'source': 'openblas_env.c' },
-  { 'base': 'blas_server', 'source': 'blas_server.c' },
+  { 'base': 'blas_server', 'source': blas_server_src },
   { 'base': 'divtable', 'source': 'divtable.c', 'addl': ['-UDOUBLE'] },
   { 'base': 'blasL1thread', 'source': 'blas_l1_thread.c' },
   { 'base': 'servercallback', 'source': 'blas_server_callback.c' },

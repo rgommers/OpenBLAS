@@ -19,6 +19,23 @@ CGEMM3M_UNROLL_M = makefile_conf_dat.get('CGEMM3M_UNROLL_M')
 ZGEMM3M_UNROLL_N = makefile_conf_dat.get('ZGEMM3M_UNROLL_N')
 ZGEMM3M_UNROLL_M = makefile_conf_dat.get('ZGEMM3M_UNROLL_M')
 
+# TODO(rg): Poor detection?!? -_-
+# Sanity check, we don't have anything greater than 16 for some of the UNROLL_N
+# options; e.g generic/zhemm3m_ucopy_16.c doesn't exist (attempted on macos); so
+# we opt for the conservative option..
+if ZGEMM3M_UNROLL_N.to_int() > 8
+  ZGEMM3M_UNROLL_N = 8
+endif
+if ZGEMM3M_UNROLL_M.to_int() > 8
+  ZGEMM3M_UNROLL_M = 8
+endif
+if CGEMM3M_UNROLL_N.to_int() > 8
+  CGEMM3M_UNROLL_N = 8
+endif
+if CGEMM3M_UNROLL_M.to_int() > 8
+  CGEMM3M_UNROLL_M = 8
+endif
+
 subdir('meson_base')
 subdir('x86_64')
 subdir('arm64')
@@ -378,22 +395,22 @@ base_kops = [
   },
   { 'base': '?geru',
     'modes': {
-        'c': {'exts': {'_k': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UCONJ']}}},
-        'z': {'exts': {'_k': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UCONJ']}}},
+        'c': {'exts': {'_k': {'addl': ['-UCONJ']}}},
+        'z': {'exts': {'_k': {'addl': ['-UCONJ']}}},
         # 'x': {'exts': {'_k': {}}},
     },
   },
   { 'base': '?gerc',
     'modes': {
-        'c': {'exts': {'_k': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DCONJ']}}},
-        'z': {'exts': {'_k': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DCONJ']}}},
+        'c': {'exts': {'_k': {'addl': ['-DCONJ']}}},
+        'z': {'exts': {'_k': {'addl': ['-DCONJ']}}},
         # 'x': {'exts': {'_k': {}}},
     },
   },
   { 'base': '?gerv',
     'modes': {
-        'c': {'exts': {'_k': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UCONJ', '-DXCONJ']}}},
-        'z': {'exts': {'_k': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UCONJ', '-DXCONJ']}}},
+        'c': {'exts': {'_k': {'addl': ['-UCONJ', '-DXCONJ']}}},
+        'z': {'exts': {'_k': {'addl': ['-UCONJ', '-DXCONJ']}}},
     },
   },
   { 'base': '?hemv',
@@ -628,56 +645,80 @@ base_kops = [
             '_oltncopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-DLOWER', '-UUNIT']},
         }},
         'c': {'exts': {
-            '_iunucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-DUNIT']},
-            '_iunncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-UUNIT']},
-            '_ilnucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-DUNIT']},
-            '_ilnncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-UUNIT']},
-            '_iutucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-DUNIT']},
-            '_iutncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-UUNIT']},
-            '_iltucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-DUNIT']},
-            '_iltncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-UUNIT']},
-            '_ounucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-DUNIT']},
-            '_ounncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-UUNIT']},
-            '_olnucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-DUNIT']},
-            '_olnncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-UUNIT']},
-            '_outucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-DUNIT']},
-            '_outncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-UUNIT']},
-            '_oltucopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-DUNIT']},
-            '_oltncopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-UUNIT']},
+            '_iunucopy': {'addl': ['-UOUTER', '-ULOWER', '-DUNIT']},
+            '_iunncopy': {'addl': ['-UOUTER', '-ULOWER', '-UUNIT']},
+            '_ilnucopy': {'addl': ['-UOUTER', '-DLOWER', '-DUNIT']},
+            '_ilnncopy': {'addl': ['-UOUTER', '-DLOWER', '-UUNIT']},
+            '_iutucopy': {'addl': ['-UOUTER', '-ULOWER', '-DUNIT']},
+            '_iutncopy': {'addl': ['-UOUTER', '-ULOWER', '-UUNIT']},
+            '_iltucopy': {'addl': ['-UOUTER', '-DLOWER', '-DUNIT']},
+            '_iltncopy': {'addl': ['-UOUTER', '-DLOWER', '-UUNIT']},
+            '_ounucopy': {'addl': ['-DOUTER', '-ULOWER', '-DUNIT']},
+            '_ounncopy': {'addl': ['-DOUTER', '-ULOWER', '-UUNIT']},
+            '_olnucopy': {'addl': ['-DOUTER', '-DLOWER', '-DUNIT']},
+            '_olnncopy': {'addl': ['-DOUTER', '-DLOWER', '-UUNIT']},
+            '_outucopy': {'addl': ['-DOUTER', '-ULOWER', '-DUNIT']},
+            '_outncopy': {'addl': ['-DOUTER', '-ULOWER', '-UUNIT']},
+            '_oltucopy': {'addl': ['-DOUTER', '-DLOWER', '-DUNIT']},
+            '_oltncopy': {'addl': ['-DOUTER', '-DLOWER', '-UUNIT']},
         }},
         'z': {'exts': {
-            '_iunucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-DUNIT']},
-            '_iunncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-UUNIT']},
-            '_ilnucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-DUNIT']},
-            '_ilnncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-UUNIT']},
-            '_iutucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-DUNIT']},
-            '_iutncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER', '-UUNIT']},
-            '_iltucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-DUNIT']},
-            '_iltncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER', '-UUNIT']},
-            '_ounucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-DUNIT']},
-            '_ounncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-UUNIT']},
-            '_olnucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-DUNIT']},
-            '_olnncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-UUNIT']},
-            '_outucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-DUNIT']},
-            '_outncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER', '-UUNIT']},
-            '_oltucopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-DUNIT']},
-            '_oltncopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER', '-UUNIT']},
+            '_iunucopy': {'addl': ['-UOUTER', '-ULOWER', '-DUNIT']},
+            '_iunncopy': {'addl': ['-UOUTER', '-ULOWER', '-UUNIT']},
+            '_ilnucopy': {'addl': ['-UOUTER', '-DLOWER', '-DUNIT']},
+            '_ilnncopy': {'addl': ['-UOUTER', '-DLOWER', '-UUNIT']},
+            '_iutucopy': {'addl': ['-UOUTER', '-ULOWER', '-DUNIT']},
+            '_iutncopy': {'addl': ['-UOUTER', '-ULOWER', '-UUNIT']},
+            '_iltucopy': {'addl': ['-UOUTER', '-DLOWER', '-DUNIT']},
+            '_iltncopy': {'addl': ['-UOUTER', '-DLOWER', '-UUNIT']},
+            '_ounucopy': {'addl': ['-DOUTER', '-ULOWER', '-DUNIT']},
+            '_ounncopy': {'addl': ['-DOUTER', '-ULOWER', '-UUNIT']},
+            '_olnucopy': {'addl': ['-DOUTER', '-DLOWER', '-DUNIT']},
+            '_olnncopy': {'addl': ['-DOUTER', '-DLOWER', '-UUNIT']},
+            '_outucopy': {'addl': ['-DOUTER', '-ULOWER', '-DUNIT']},
+            '_outncopy': {'addl': ['-DOUTER', '-ULOWER', '-UUNIT']},
+            '_oltucopy': {'addl': ['-DOUTER', '-DLOWER', '-DUNIT']},
+            '_oltncopy': {'addl': ['-DOUTER', '-DLOWER', '-UUNIT']},
         }},
     },
   },
   { 'base': '?hemm',
     'modes': {
         'c': {'exts': {
-            '_iutcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
-            '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
-            '_outcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
-            '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '_iutcopy': {'addl': ['-UOUTER', '-ULOWER']},
+            '_iltcopy': {'addl': ['-UOUTER', '-DLOWER']},
+            '_outcopy': {'addl': ['-DOUTER', '-ULOWER']},
+            '_oltcopy': {'addl': ['-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {},
+            '3m_ilcopyb': {},
+            '3m_olcopyb': {},
+            '3m_oucopyb': {},
+            '3m_olcopyr': {},
+            '3m_oucopyr': {},
+            '3m_iucopyr': {},
+            '3m_ilcopyr': {},
+            '3m_oucopyi': {},
+            '3m_olcopyi': {},
+            '3m_iucopyi': {},
+            '3m_ilcopyi': {},
         }},
         'z': {'exts': {
-            '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
-            '_iltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
-            '_outcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
-            '_oltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '_iutcopy': {'addl': ['-UOUTER', '-ULOWER']},
+            '_iltcopy': {'addl': ['-UOUTER', '-DLOWER']},
+            '_outcopy': {'addl': ['-DOUTER', '-ULOWER']},
+            '_oltcopy': {'addl': ['-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {},
+            '3m_ilcopyb': {},
+            '3m_olcopyb': {},
+            '3m_oucopyb': {},
+            '3m_olcopyr': {},
+            '3m_oucopyr': {},
+            '3m_iucopyr': {},
+            '3m_ilcopyr': {},
+            '3m_oucopyi': {},
+            '3m_olcopyi': {},
+            '3m_iucopyi': {},
+            '3m_ilcopyi': {},
         }},
     },
   },
@@ -795,17 +836,45 @@ base_kops = [
             '_outcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-ULOWER']},
             '_oltcopy': {'addl': ['-DDOUBLE', '-UCOMPLEX', '-DOUTER', '-DLOWER']},
         }},
+        # NOTE(rg): for c,z; there are a bunch of 3m_i?copy* symbols where there
+        # may be a compulsion to reduce this into a series of loops; resist
+        # this, since there's no good way to extend the exts keys alone without
+        # replacing the whole dictionary.
         'c': {'exts': {
-            '_iutcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
-            '_iltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
-            '_outcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
-            '_oltcopy': {'addl': ['-UDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '_iutcopy': {'addl': ['-UOUTER', '-ULOWER']},
+            '_iltcopy': {'addl': ['-UOUTER', '-DLOWER']},
+            '_outcopy': {'addl': ['-DOUTER', '-ULOWER']},
+            '_oltcopy': {'addl': ['-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {},
+            '3m_ilcopyb': {},
+            '3m_olcopyb': {},
+            '3m_oucopyb': {},
+            '3m_olcopyr': {},
+            '3m_oucopyr': {},
+            '3m_iucopyr': {},
+            '3m_ilcopyr': {},
+            '3m_oucopyi': {},
+            '3m_olcopyi': {},
+            '3m_iucopyi': {},
+            '3m_ilcopyi': {},
         }},
         'z': {'exts': {
-            '_iutcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-ULOWER']},
-            '_iltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-UOUTER', '-DLOWER']},
-            '_outcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-ULOWER']},
-            '_oltcopy': {'addl': ['-DDOUBLE', '-DCOMPLEX', '-DOUTER', '-DLOWER']},
+            '_iutcopy': {'addl': ['-UOUTER', '-ULOWER']},
+            '_iltcopy': {'addl': ['-UOUTER', '-DLOWER']},
+            '_outcopy': {'addl': ['-DOUTER', '-ULOWER']},
+            '_oltcopy': {'addl': ['-DOUTER', '-DLOWER']},
+            '3m_iucopyb': {},
+            '3m_ilcopyb': {},
+            '3m_olcopyb': {},
+            '3m_oucopyb': {},
+            '3m_olcopyr': {},
+            '3m_oucopyr': {},
+            '3m_iucopyr': {},
+            '3m_ilcopyr': {},
+            '3m_oucopyi': {},
+            '3m_olcopyi': {},
+            '3m_iucopyi': {},
+            '3m_ilcopyi': {},
         }},
     },
   },
@@ -1108,6 +1177,19 @@ foreach _kop : base_kops
           endforeach
         endif
 
+        # ?{hemm,symm}3m_* Rules
+        if '3m_' in ext
+          foreach sw_key, sw_val : m3_startswith
+            if ext.startswith(sw_key)
+              _ext_cargs += sw_val
+            endif
+          endforeach
+          foreach ew_key, ew_val : m3_endswith
+            if ext.endswith(ew_key)
+              _ext_cargs += ew_val
+            endif
+          endforeach
+        endif
       if base == '?gemm3m' and conf_hdat.has('ARCH_ARM64')
         continue
       endif
