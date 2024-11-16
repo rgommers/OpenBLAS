@@ -11,13 +11,13 @@
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
-        default_options: ['c_std=c99', 'pkgconfig.relocatable=true'],
-        license: 'BSD-3-Clause',
-        version: '0.3.27.dev')
+        default_options: ['c_std=c99'],
+        meson_version: '>=1.0.0',
+        version: '0.3.28')
 
 openblas_major_version = 0 # soversion
 openblas_minor_version = 3
-openblas_patch_version = '27.dev'
+openblas_patch_version = '28'
 openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas_patch_version@'
 
 # Skip the check for valid CC
