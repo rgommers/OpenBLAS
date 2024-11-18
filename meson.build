@@ -154,6 +154,25 @@ else
   add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
 endif
 
+# Warnings from LAPACK that we're not interested in seeing:
+add_project_arguments(
+  fc.get_supported_arguments(
+    '-Wno-conversion',
+    '-Wno-maybe-uninitialized',
+    '-Wno-unused-dummy-argument',
+    '-Wno-unused-variable',
+  ),
+  language: 'fortran'
+)
+add_project_arguments(
+  cc.get_supported_arguments(
+    '-Wno-maybe-uninitialized',
+    '-Wno-unused-function',
+    '-Wno-unused-variable',
+  ),
+  language: 'c'
+)
+
 py3 = find_program('python')
 
 simd_extensions = [
