@@ -11,7 +11,7 @@
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
-        default_options: ['c_std=c99'],
+        default_options: ['c_std=gnu11'],
         meson_version: '>=1.0.0',
         version: '0.3.28')
 
@@ -175,6 +175,7 @@ add_project_arguments(
 
 py3 = find_program('python')
 
+# TODO: these checks are not very robust, copy from NumPy instead
 simd_extensions = [
   {'flag': '-mmmx', 'define': 'HAVE_MMX'},
   {'flag': '-msse', 'define': 'HAVE_SSE'},
@@ -186,6 +187,11 @@ simd_extensions = [
   {'flag': '-mfma', 'define': 'HAVE_FMA3'},
   {'flag': '-mavx', 'define': 'HAVE_AVX'},
   {'flag': '-mavx2', 'define': 'HAVE_AVX2'},
+  {'flag': '-mavx512f', 'define': 'HAVE_AVX512F'},
+  {'flag': '-mavx512vl', 'define': 'HAVE_AVX512VL'},
+  {'flag': '-mavx512dq', 'define': 'HAVE_AVX512DQ'},
+  {'flag': '-mavx512cd', 'define': 'HAVE_AVX512CD'},
+  {'flag': '-march=skylake-avx512', 'define': 'HAVE_AVX512'},
 ]
 
 simd_cargs = []
@@ -203,7 +209,12 @@ endforeach
 # Generate configuration header
 configure_file(output : 'simd_conf.h',
                configuration : simd_conf_data)
-# Can't be added as a project argument since it won't be generated until later
+
+# Header is named simd_conf.h only in this Meson build (TODO: fix that up),
+# so adding a project-global include for it here.
+if cc.has_multi_arguments('-include', f'@_mbproot@/simd_conf.h')
+  add_project_arguments(['-include', f'@_mbproot@/simd_conf.h'], language: 'c')
+endif
 add_project_arguments(simd_cargs, language: 'c')
 
 # Common symbol related options

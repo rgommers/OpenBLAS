@@ -1,6 +1,4 @@
-interface_args = cc.get_supported_arguments(
-  f'-include @_mbproot@/simd_conf.h',
-)
+interface_args = []
 # if not build_without_cblas
 #   interface_args += '-DCBLAS'
 # endif
