@@ -580,6 +580,8 @@ subdir('driver/level3')
 subdir('driver/others')
 subdir('kernel')
 
+threads_dep = dependency('threads')
+
 openblas = both_libraries('openblas',
                           link_whole: [
                            _interface,
@@ -588,7 +590,7 @@ openblas = both_libraries('openblas',
                            _others,
                            _kern,
                           ],
-                          dependencies: [dependency('threads'), quadmath_dep],
+                          dependencies: [threads_dep, quadmath_dep],
                           override_options: ['b_lundef=false', 'b_asneeded=false'],
                           install: true,
                          )
