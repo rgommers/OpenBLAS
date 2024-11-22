@@ -69,7 +69,7 @@ jobs:
           python -m pip install meson ninja
       - name: Build OpenBLAS
         run: |
-          meson setup build --buildtype release
+          meson setup build --buildtype release -Dbuild_testing=true
           meson compile -C build
       - name: Run tests
         run: |
@@ -121,7 +121,7 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          meson setup build --buildtype release
+          meson setup build --buildtype release -Dbuild_testing=true
           meson compile -C build
 
       - name: Run tests
