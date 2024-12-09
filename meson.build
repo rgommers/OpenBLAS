@@ -20,6 +20,8 @@ openblas_minor_version = 3
 openblas_patch_version = '28'
 openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas_patch_version@'
 
+as_subproject = get_option('as_subproject')
+
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
 fc = meson.get_compiler('fortran')
@@ -593,7 +595,7 @@ subdir('kernel')
 
 threads_dep = dependency('threads')
 
-openblas = both_libraries('openblas',
+openblas = library('openblas',
                           link_whole: [
                            _interface,
                            _l2_driver,
@@ -605,7 +607,6 @@ openblas = both_libraries('openblas',
                           override_options: ['b_lundef=false', 'b_asneeded=false'],
                           install: true,
                          )
-openblas_static = openblas.get_static_lib()
 
 # Handle headers
 fs = import('fs')
@@ -629,53 +630,75 @@ template = f'@_msproot@/openblas_config_template.h'
 common_interface = f'@_msproot@/common_interface.h'
 cblas = f'@_msproot@/cblas.h'
 
-# Prepare config_last.h from config.h
-pcl = custom_target('prepare_config_last',
-  output : 'config_last.h',
-  command : [py3, f'@_msproot@/prepare_config_last.py',
-             '--config', fconfig_h,
-             '--output', fconfig_last,
-             quad_prec ? '--quad-precision' : [],
-             exprecision ? '--exprecision' : [],
-            ],
-  build_by_default : true,
-)
+if not as_subproject
+  # Prepare config_last.h from config.h
+  pcl = custom_target('prepare_config_last',
+    output : 'config_last.h',
+    command : [py3, f'@_msproot@/prepare_config_last.py',
+               '--config', fconfig_h,
+               '--output', fconfig_last,
+               quad_prec ? '--quad-precision' : [],
+               exprecision ? '--exprecision' : [],
+              ],
+    build_by_default : true,
+  )
 
-# Generate the headers
-custom_target('gen_install_headers',
-  output : ['openblas_config.h', 'f77blas.h', 'cblas.h'],
-  command : [py3, f'@_msproot@/gen_install_headers.py',
-             '--dest-dir', f'@_mbproot@',
-             '--version', meson.project_version(),
-             '--config-last', fconfig_last,
-             '--template', template,
-             '--common-interface', common_interface,
-             '--cblas', cblas,
-             not get_option('no_fortran') ? '--generate-f77blas' : [],
-             not get_option('build_without_cblas') ? '--generate-cblas' : [],
-            ],
-  install : true,
-  install_dir : 'include',
-  depends : pcl,
-)
+  # Generate the headers
+  custom_target('gen_install_headers',
+    output : ['openblas_config.h', 'f77blas.h', 'cblas.h'],
+    command : [py3, f'@_msproot@/gen_install_headers.py',
+               '--dest-dir', f'@_mbproot@',
+               '--version', meson.project_version(),
+               '--config-last', fconfig_last,
+               '--template', template,
+               '--common-interface', common_interface,
+               '--cblas', cblas,
+               not get_option('no_fortran') ? '--generate-f77blas' : [],
+               not get_option('build_without_cblas') ? '--generate-cblas' : [],
+              ],
+    install : true,
+    install_dir : 'include',
+    depends : pcl,
+  )
 
-pkg.generate(openblas,
-             name: 'openblas',
-             filebase: 'meson-openblas',
-             description: 'OpenBLAS via meson build',
-             version: f'@pkg_ver@_meson',
-             install_dir: pkg_install_dir,
-            )
+  pkg.generate(openblas,
+               name: 'openblas',
+               filebase: 'meson-openblas',
+               description: 'OpenBLAS via meson build',
+               version: f'@pkg_ver@_meson',
+               install_dir: pkg_install_dir,
+              )
+endif
 
-if build_testing
+if build_testing and not as_subproject
   subdir('test')
   subdir('ctest')
   subdir('utest')
 endif
 
+
 # Dependency setup
-openblas_dep = declare_dependency(
-    link_whole : openblas_static,
+openblas_dep =  declare_dependency(
+    link_with : openblas,
+    include_directories : _inc,
+    version: meson.project_version(),
+)
+if false
+  openblas_static_dep = declare_dependency(
+      link_whole : openblas_static,
+      include_directories : _inc,
+      version: meson.project_version(),
+  )
+
+  openblas_shared_dep = declare_dependency(
+      link_with : openblas_shared,
+      include_directories : _inc,
+      version: meson.project_version(),
+  )
+endif
+
+lapack_shared_dep = declare_dependency(
+    link_with : netlib_lapack,
     include_directories : _inc,
     version: meson.project_version(),
 )
