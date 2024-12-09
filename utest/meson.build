@@ -94,7 +94,7 @@ _utest_nowarn = cc.get_supported_arguments(
 openblas_utest_exec = executable(
     'openblas_utest',
     sources: sources_utest,
-    link_with: openblas_static,
+    link_with: openblas,
     dependencies: threads_dep,
     include_directories: utest_inc,
     c_args: _cargs + _utest_nowarn,
@@ -103,7 +103,7 @@ openblas_utest_exec = executable(
 openblas_utest_ext_exec = executable(
     'openblas_utest_ext',
     sources: sources_utest_ext,
-    link_with: openblas_static,
+    link_with: openblas,
     dependencies: threads_dep,
     # This hack is required as `utest/test_extensions/common.c` needs
     # `common.h` from the source root, not `utest/test_extensions` directory
