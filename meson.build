@@ -20,6 +20,12 @@ openblas_minor_version = 3
 openblas_patch_version = '28'
 openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas_patch_version@'
 
+supported_architectures = ['x86_64', 'aarch64']
+if host_machine.cpu_family() not in supported_architectures
+  cpu_family = host_machine.cpu_family()
+  error(f'Building OpenBLAS with Meson is currently not supported on @cpu_family@.')
+endif
+
 as_subproject = get_option('as_subproject')
 
 # Skip the check for valid CC
@@ -178,23 +184,26 @@ add_project_arguments(
 py3 = find_program('python')
 
 # TODO: these checks are not very robust, copy from NumPy instead
-simd_extensions = [
-  {'flag': '-mmmx', 'define': 'HAVE_MMX'},
-  {'flag': '-msse', 'define': 'HAVE_SSE'},
-  {'flag': '-msse2', 'define': 'HAVE_SSE2'},
-  {'flag': '-msse3', 'define': 'HAVE_SSE3'},
-  {'flag': '-mssse3', 'define': 'HAVE_SSSE3'},
-  {'flag': '-msse4.1', 'define': 'HAVE_SSE4_1'},
-  {'flag': '-msse4.2', 'define': 'HAVE_SSE4_2'},
-  {'flag': '-mfma', 'define': 'HAVE_FMA3'},
-  {'flag': '-mavx', 'define': 'HAVE_AVX'},
-  {'flag': '-mavx2', 'define': 'HAVE_AVX2'},
-  {'flag': '-mavx512f', 'define': 'HAVE_AVX512F'},
-  {'flag': '-mavx512vl', 'define': 'HAVE_AVX512VL'},
-  {'flag': '-mavx512dq', 'define': 'HAVE_AVX512DQ'},
-  {'flag': '-mavx512cd', 'define': 'HAVE_AVX512CD'},
-  {'flag': '-march=skylake-avx512', 'define': 'HAVE_AVX512'},
-]
+simd_extensions = []
+if host_machine.cpu_family() == 'x86_64'
+  simd_extensions += [
+    {'flag': '-mmmx', 'define': 'HAVE_MMX'},
+    {'flag': '-msse', 'define': 'HAVE_SSE'},
+    {'flag': '-msse2', 'define': 'HAVE_SSE2'},
+    {'flag': '-msse3', 'define': 'HAVE_SSE3'},
+    {'flag': '-mssse3', 'define': 'HAVE_SSSE3'},
+    {'flag': '-msse4.1', 'define': 'HAVE_SSE4_1'},
+    {'flag': '-msse4.2', 'define': 'HAVE_SSE4_2'},
+    {'flag': '-mfma', 'define': 'HAVE_FMA3'},
+    {'flag': '-mavx', 'define': 'HAVE_AVX'},
+    {'flag': '-mavx2', 'define': 'HAVE_AVX2'},
+    {'flag': '-mavx512f', 'define': 'HAVE_AVX512F'},
+    {'flag': '-mavx512vl', 'define': 'HAVE_AVX512VL'},
+    {'flag': '-mavx512dq', 'define': 'HAVE_AVX512DQ'},
+    {'flag': '-mavx512cd', 'define': 'HAVE_AVX512CD'},
+    {'flag': '-march=skylake-avx512', 'define': 'HAVE_AVX512'},
+  ]
+endif
 
 simd_cargs = []
 simd_conf_data = configuration_data()
