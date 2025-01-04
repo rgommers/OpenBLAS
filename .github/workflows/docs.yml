@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - test-docs-deploy
   pull_request:
     branches:
       - develop
@@ -11,7 +12,7 @@ on:
 jobs:
   build:
     name: Deploy docs
-    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    if: "github.repository == 'rgommers/OpenBLAS'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
